@@ -10,6 +10,31 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
 
+  jenkins-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    container_name: jenkins-agent
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_AGENT_NAME=agent1
+        - JENKINS_SECRET=51afc5d28baff5457e20bdca169e6e369224d3d08d7765a4272eb8e64b3a9956
+
+    volumes:
+      - jenkins_agent_home:/home/jenkins/agent
+
+    networks:
+      - jenkins-net
+
+
 volumes:
   jenkins_home:
+  jenkins_agent_home:
 
+networks:
+  jenkins-net:
+    driver: bridge

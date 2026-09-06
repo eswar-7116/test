@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'agent1'
+    }
 
     stages {
         stage("Checkout") {
@@ -25,7 +27,10 @@ pipeline {
         stage("Start") {
             steps {
                 echo "Starting..."
-                sh "./run.sh"
+                sh 'pkill -f "python3 -m http.server" || true'
+                sh 'nohup ./run.sh &'
+                sh 'sleep 5'
+                sh 'curl -s http://localhost:8000 || echo "Server check done"'
             }
         }
     }
@@ -37,6 +42,11 @@ pipeline {
 
         failure {
             echo "Pipeline failed"
+        }
+
+        always {
+            echo "Killing server"
+            sh 'pkill -f "python3 -m http.server" || true'
         }
     }
 }

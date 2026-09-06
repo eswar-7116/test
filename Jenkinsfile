@@ -25,6 +25,7 @@ pipeline {
         stage("Start") {
             steps {
                 echo "Starting..."
+                sh "./run.sh"
             }
         }
     }
